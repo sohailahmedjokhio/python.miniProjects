@@ -21,7 +21,7 @@ def main():
     parse.add_argument('--use_punctuation', action='store_true', help='Using punctuation')
     args = parse.parse_args()
     password = get_password(args.length, args.use_punctuation)
-    print(password)
+    print('Generated password will be: ', password)
 
 if __name__ == '__main__':
     main()
