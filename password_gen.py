@@ -8,13 +8,23 @@ import random
 import string
 
 
+class InvalidPasswordLengthError(Exception):
+    pass
+
+
 def get_one_each_password(length, num_ascii_letters, num_digits, num_punctuation):
-    material = string.ascii_letters + string.digits + string.punctuation
-    one_letter = random.choice(string.ascii_letters)
-    one_digit = random.choice(string.digits)
-    one_punctuation = random.choice(string.punctuation)
-    password = ''.join(random.choices(material, k=length-3)) + one_letter + one_digit + one_punctuation
-    return ''.join(random.sample(password, k=len(password)))
+    total_required_length = num_ascii_letters + num_digits + num_punctuation
+    if total_required_length > length:
+        raise InvalidPasswordLengthError(f'total_required_length {total_required_length} exceeds length {length}')
+    required_ascii_letters = random.choices(string.ascii_letters, k=num_ascii_letters)
+    required_digits = random.choices(string.digits, k=num_digits)
+    required_punctuation = random.choices(string.punctuation, k=num_punctuation)
+    material = (
+        random.choices(string.ascii_letters+string.digits+string.punctuation, k=length-total_required_length)
+        + required_ascii_letters + required_digits + required_punctuation)
+    print(material)
+    password = ''.join(random.sample(material, length))
+    return password
 
 
 def get_password(length, use_punctuation=True):

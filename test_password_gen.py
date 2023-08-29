@@ -17,7 +17,7 @@ def test_one_each():
     ascii_letter_count = 0
     digits_count = 0
     punctuation_count = 0
-    passwd = get_one_each_password(10)
+    passwd = get_one_each_password(10, 2, 3, 4)
     for c in passwd:
         if c in string.ascii_letters:
             ascii_letter_count += 1
@@ -27,4 +27,4 @@ def test_one_each():
             punctuation_count += 1
     assert ascii_letter_count >= 1
     assert digits_count >= 1
-    assert punctuation_count >= 1
+    assert punctuation_count >= 3
