@@ -12,18 +12,33 @@ class InvalidPasswordLengthError(Exception):
     pass
 
 
-def get_one_each_password(length, num_ascii_letters, num_digits, num_punctuation):
-    total_required_length = num_ascii_letters + num_digits + num_punctuation
+def get_one_each_password(length, required_lower, required_upper, required_digits, required_punctuation):
+    total_required_length = required_lower + required_upper + required_digits + required_punctuation
     if total_required_length > length:
         raise InvalidPasswordLengthError(f'total_required_length {total_required_length} exceeds length {length}')
-    required_ascii_letters = random.choices(string.ascii_letters, k=num_ascii_letters)
-    required_digits = random.choices(string.digits, k=num_digits)
-    required_punctuation = random.choices(string.punctuation, k=num_punctuation)
-    material = (
-        random.choices(string.ascii_letters+string.digits+string.punctuation, k=length-total_required_length)
-        + required_ascii_letters + required_digits + required_punctuation)
-    print(material)
-    password = ''.join(random.sample(material, length))
+    # Create required material list
+    required_material = []
+    if required_lower > 0: 
+        required_material.extend(random.choices(string.ascii_lowercase, k=required_lower))
+    if required_upper > 0:
+        required_material.extend(random.choices(string.ascii_uppercase, k=required_upper))
+    if required_digits > 0:
+        required_material.extend(random.choices(string.digits, k=required_digits))
+    if required_punctuation > 0:
+        required_material.extend(random.choices(string.punctuation, k=required_punctuation))
+    # Create random list
+    random_material = []
+    if required_lower >= 0: 
+        random_material.extend(random.choices(string.ascii_lowercase, k=required_lower))
+    if required_upper >= 0:
+        random_material.extend(random.choices(string.ascii_uppercase, k=required_upper))
+    if required_digits >= 0:
+        random_material.extend(random.choices(string.digits, k=required_digits))
+    if required_punctuation >= 0:
+        random_material.extend(random.choices(string.punctuation, k=required_lower))
+    required_material.extend(random.choices(random_material, k=length-total_required_length))
+    print(required_material)
+    password = ''.join(random.sample(required_material, length))
     return password
 
 
