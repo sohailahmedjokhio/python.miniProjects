@@ -12,30 +12,31 @@ class InvalidPasswordLengthError(Exception):
     pass
 
 
-def get_one_each_password(length, required_lower, required_upper, required_digits, required_punctuation):
-    total_required_length = required_lower + required_upper + required_digits + required_punctuation
-    if total_required_length > length:
-        raise InvalidPasswordLengthError(f'total_required_length {total_required_length} exceeds length {length}')
-    # Create the required material list
+class InvalidCharClassRequired(Exception):
+    pass
+
+
+class CharClass:
+    def __init__(self, num_required, char_class):
+        self.num_required = num_required
+        self.char_class = char_class
+
+
+def get_password_with_classes(length, char_classes):
+    total_required_length = 0
     required_material = []
-    if required_lower > 0: 
-        required_material.extend(random.choices(string.ascii_lowercase, k=required_lower))
-    if required_upper > 0:
-        required_material.extend(random.choices(string.ascii_uppercase, k=required_upper))
-    if required_digits > 0:
-        required_material.extend(random.choices(string.digits, k=required_digits))
-    if required_punctuation > 0:
-        required_material.extend(random.choices(string.punctuation, k=required_punctuation))
-    # Create random list
     random_material = []
-    if required_lower >= 0: 
-        random_material.extend(random.choices(string.ascii_lowercase, k=required_lower))
-    if required_upper >= 0:
-        random_material.extend(random.choices(string.ascii_uppercase, k=required_upper))
-    if required_digits >= 0:
-        random_material.extend(random.choices(string.digits, k=required_digits))
-    if required_punctuation >= 0:
-        random_material.extend(random.choices(string.punctuation, k=required_lower))
+    for char_class in char_classes:
+        char_class_required = char_class.num_required
+        total_required_length += char_class_required
+        if total_required_length > length:
+            raise InvalidPasswordLengthError(f'total_required_length {total_required_length} exceeds length {length}')
+        if char_class_required > 0:
+            required_material.extend(random.choices(char_class.char_class, k=char_class_required))
+        if char_class_required >= 0:
+            random_material.extend(char_class.char_class)
+        else:
+            raise(InvalidCharClassRequired(f'Number of required character class characters ({char_class_required}) is less than zero.'))
     required_material.extend(random.choices(random_material, k=length-total_required_length))
     print(required_material)
     password = ''.join(random.sample(required_material, length))
