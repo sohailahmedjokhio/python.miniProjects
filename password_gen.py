@@ -16,7 +16,7 @@ def get_one_each_password(length, required_lower, required_upper, required_digit
     total_required_length = required_lower + required_upper + required_digits + required_punctuation
     if total_required_length > length:
         raise InvalidPasswordLengthError(f'total_required_length {total_required_length} exceeds length {length}')
-    # Create required material list
+    # Create the required material list
     required_material = []
     if required_lower > 0: 
         required_material.extend(random.choices(string.ascii_lowercase, k=required_lower))
